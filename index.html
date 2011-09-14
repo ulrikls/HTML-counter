@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tæller</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="http://fonts.googleapis.com/css?family=Orbitron:regular,bold" rel="stylesheet" type="text/css">
+	<style type="text/css">
+		body {
+			font-family: 'Orbitron', Arial, sans-serif;
+			text-align: center;
+		}
+		#wrapper {
+			position: absolute;
+			top: 50%;
+			width: 99%;
+		}
+		#counter {
+			font-size: 19em;
+			margin-top: -0.5em;
+			font-weight: bold;
+		}
+		#countFactor {
+			position: absolute;
+			bottom: 0.5em;
+			right: 0.5em;
+			color: gray;
+			font-size: 0.5em;
+		}
+		.countFactorInp {
+			border: none;
+			border-bottom: 1px solid gray;
+			font-size: 1em;
+		}
+		#factor {
+			text-align: right;
+		}
+	</style>
+	<script type="text/javascript" src="jquery-1.6.1.min.js"></script>
+	<script type="text/javascript">
+	
+		$(document).ready(function($){
+			if (localStorage.count == undefined)
+				localStorage.count = 0;
+			if (localStorage.factor == undefined)
+				localStorage.factor = 1;
+			if (localStorage.unit == undefined)
+				localStorage.unit = '';
+
+			setCount();
+			$('#factor').val(localStorage.factor);
+			$('#unit').val(localStorage.unit);
+			
+			$('body').keyup(doKbdCount);
+			//$('#counter').mouseup(doCount);
+			
+			$('#factor').change(setFactor);
+			$('#factor').keyup(setFactor);
+			//$('#factor').mouseup(setFactor);
+			$('#unit').change(setUnit);
+			$('#unit').keyup(setUnit);
+		});
+		
+		function doKbdCount(event) {
+			if (event.target.nodeName != 'INPUT') {
+				event.preventDefault();
+				switch (event.which) {
+					case 187:
+					case 32:
+						localStorage.count++;
+						break;
+					case 82:
+						localStorage.count = 0;
+						break;
+					default:
+				}
+				setCount();
+			}
+		}
+		
+		function doCount(event) {
+			if (event.target.nodeName != 'INPUT') {
+				event.preventDefault();
+				localStorage.count++;
+				setCount();
+			}
+		}
+		
+		function setCount() {
+			var unit = localStorage.unit;
+			if (unit.length > 0) {
+				unit = ' '+unit;
+			}
+			var count = Math.round(localStorage.count*localStorage.factor);
+			$('#counter').text(count+unit);
+		}
+		function setFactor() {
+			localStorage.factor = Number($('#factor').val().replace(',','.'));
+			setCount();
+		}
+		function setUnit() {
+			localStorage.unit = $('#unit').val();
+			setCount();
+		}
+	</script>
+</head>
+<body>
+
+<div id="wrapper">
+<div id="counter">0</div>
+</div>
+
+<div id="countFactor">
+	1 =
+	<input type="text" name="factor" id="factor" size="5" placeholder="faktor" class="countFactorInp" />
+	<input type="text" name="unit" id="unit" size="5" placeholder="enhed" class="countFactorInp" />
+</div>
+
+</body>
+</html>
